@@ -8,10 +8,8 @@
 // Dependencies
 const program = require('commander');
 const { prompt } = require('inquirer'); // inquirer.prompt
-const shell = require('shelljs');
-const figlet = require('figlet');
-const minimist = require('minimist');
-const chalk = require('chalk');
+const superagent = require('superagent');
+const sh = require('shelljs');
 
 //----------------------------------
 //* Basic Commands
@@ -43,9 +41,13 @@ program
   .command('login')
   .description('Login to the fooDriver server')
   .action(() => {
-    prompt(menuLogin)
-      .then(() => console.log('You are now connected to the fooDriver server'));
-    // prompt(menuLogin).then(answers => login(answers)); // TODO <---
+    prompt(menuLogin).then((answers) => {
+      superagent.post('http://localhost:3000/')
+        .send(answers)
+        .then((response) => {
+          console.log('This happened:', response.status, '\n');
+        }); 
+    });
   });
 
 //----------------------------------
@@ -67,7 +69,7 @@ program
   .description('Add a new item to the pantry')
   .action(() => {
     prompt(menuAddPantryItem)
-      .then(() => console.log('Adding item to pantry...'));
+      // .then(() => console.log('Adding item to pantry...'));
     // prompt(menuAddPantryItem).then(answers => addPantryItem(answers)); // TODO <---
   });
 
