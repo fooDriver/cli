@@ -3,65 +3,25 @@
 //----------------------------------
 // Safety Goggles ON
 'use strict';
+console.clear();
 
 // Dependencies
-const shell = require('shelljs');
 const figlet = require('figlet');
-const minimist = require('minimist');
-const chalk = require('chalk');
-const mongoose = require('mongoose');
+const sh = require('shelljs');
+const commands = require('./src/lib/commands.js');
 
 //----------------------------------
 //* Welcome Menu
 //----------------------------------
-//? Stretch Goal
-
-//----------------------------------
-//* DB Connection
-//----------------------------------
-// TODO: REVIEW
-mongoose.Promise = global.Promise;
-const db = mongoose.connect('mongodb://localhost:27017/foodriver', {
-  useNewUrlParser:true,
-  useCreateIndex: true,
-  useFindAndModify: false,
+figlet('fooDriver CLI', function(err, banner) {
+  if (err) {
+    console.log('Something went wrong...');
+    console.dir(err);
+    return;
+  }
+  console.log(banner);
+  console.log('\nType \'fooDriver --help\' for a full list of commands.\n');
+  
+  // sh.exec('./src/lib/node commands.js --version');
+  process.exit();
 });
-
-//----------------------------------
-//* Import Models
-//----------------------------------
-// TODO
-//? require users
-
-//? require items
-
-//----------------------------------
-//* Method Library
-//----------------------------------
-// TODO
-//? Item: Create
-
-//? Item: Find
-
-//? Item: Update
-
-//? Item: Remove
-
-//? Item: List All
-
-//? User: Set Login Credentials (.env)
-
-//? User: Create (Register)
-
-//? User: Find (by Name)
-
-//? User: Update (by ID)
-
-//? User: Remove (by ID)
-
-//? User: List All
-
-//----------------------------------
-//* Export Method Library
-//----------------------------------
-// TODO
