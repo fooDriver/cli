@@ -15,285 +15,171 @@ const sh = require('shelljs');
 //* Basic Commands
 //----------------------------------
 //? Version
-program
-  .version('1.0.0')
-  .description('fooDriver CLI');
+program.version('1.0.0').description('fooDriver CLI');
 
 //----------------------------------
-//* User Login
+//* Global Auth Signup
 //----------------------------------
-//? Questions
-const menuLogin = [
+
+const authLogin = [
   {
     type: 'input',
-    name: 'username', 
-    message: 'Enter your username:',
+    name: 'username',
+    message: 'Enter your username:'
   },
   {
     type: 'password',
-    name: 'password', 
-    message: 'Enter your password:',
+    name: 'password',
+    message: 'Enter your password:'
+  }
+];
+
+//----------------------------------
+//* User Signup
+//----------------------------------
+//? Questions
+const menuSignUp = [
+  {
+    type: 'input',
+    name: 'signinUsername',
+    message: 'Enter your admin username:'
   },
+  {
+    type: 'password',
+    name: 'signinPassword',
+    message: 'Enter your password:'
+  },
+  {
+    type: 'input',
+    name: 'username',
+    message: 'Create an username:'
+  },
+  {
+    type: 'password',
+    name: 'password',
+    message: 'Create a password:'
+  },
+  {
+    type: 'name',
+    name: 'name',
+    message: 'Enter the first and last name'
+  },
+  {
+    type: 'input',
+    name: 'role',
+    message: 'assign a role'
+  }
 ];
 
 //? Command
 program
-  .command('login')
-  .description('Login to the fooDriver server')
+  .command('signup')
+  .description('SignUp to the fooDriver server')
   .action(() => {
-    prompt(menuLogin).then((answers) => {
-      superagent.post('http://localhost:3000/')
-        .send(answers)
-        .then((response) => {
-          console.log('This happened:', response.status, '\n');
-        }); 
+    prompt(menuSignUp).then(answers => {
+      superagent
+        .post('http://localhost:3000/signup/admin')
+        .send({
+          username: answers.username,
+          password: answers.password,
+          name: answers.name,
+          role: answers.role
+        })
+        .auth(answers.signinUsername, answers.signinPassword)
+        .then(response => {
+          console.log('Signup Successful');
+        });
     });
   });
 
 //----------------------------------
-//* Add Pantry Item
+//* Check the drivers
 //----------------------------------
-//? Questions
-const menuAddPantryItem = [
-  {
-    type: 'input',
-    name: 'pantryItem', 
-    message: 'What item would you like to add to the pantry?',
-    default: 'singular nouns only',
-  },
-];
-
 //? Command
 program
-  .command('additem')
-  .description('Add a new item to the pantry')
+  .command('get-driver')
+  .description('Grab all the drivers')
   .action(() => {
-    prompt(menuAddPantryItem)
-      // .then(() => console.log('Adding item to pantry...'));
-    // prompt(menuAddPantryItem).then(answers => addPantryItem(answers)); // TODO <---
+    prompt(authLogin).then(answers => {
+      superagent
+        .get('http://localhost:3000/admin/driver-routes')
+        .auth(answers.username, answers.password)
+        .then(response => {
+          console.log(response.text);
+        });
+    });
   });
 
 //----------------------------------
-//* Add User (Register)
+//* User Signup
 //----------------------------------
 //? Questions
-const menuAddUser = [
+const menuPantry = [
   {
     type: 'input',
-    name: 'username', 
-    message: 'Choose a username:',
-  },
-  {
-    type: 'list',
-    name: 'role', 
-    message: 'Choose the user role:',
-    choices: [
-      'user',
-      'donator',
-      'driver',
-      'admin',
-    ],
+    name: 'signinUsername',
+    message: 'Enter your admin username:'
   },
   {
     type: 'password',
-    name: 'password', 
-    message: 'Specify a password:',
+    name: 'signinPassword',
+    message: 'Enter your password:'
   },
+  {
+    type: 'input',
+    name: 'food',
+    message: 'Add your food:'
+  }
 ];
 
 //? Command
 program
-  .command('adduser')
-  .description('Add a new user to the database')
+  .command('add-food')
+  .description('Add your food to your pantry')
   .action(() => {
-    prompt(menuAddUser)
-      .then(() => console.log('User created'));
-    // prompt(menuAddUser).then(answers => addUser(answers)); // TODO <---
+    prompt(menuPantry).then(answers => {
+      superagent
+        .post('http://localhost:3000/admin/food')
+        .send({
+          food: answers.food
+        })
+        .auth(answers.signinUsername, answers.signinPassword)
+        .then(response => {
+          console.log(response.text);
+        });
+    });
   });
 
 //----------------------------------
-//* Find Pantry Item (by name)
+//* User Signup
 //----------------------------------
 //? Questions
-const menuFindPantryItem = [
+const menuGrab = [
   {
     type: 'input',
-    name: 'pantryItem', 
-    message: 'What item are you looking for?',
-    default: 'use a singular noun',
-  },
-];
-
-//? Command
-program
-  .command('finditem')
-  .description('Find an item in the pantry')
-  .action(() => {
-    prompt(menuFindPantryItem)
-      .then(() => console.log('Searching the pantry for your item...'));
-    // prompt(menuFindPantryItem).then(answers => findPantryItem(answers)); // TODO <--- prints the item object
-  });
-
-//----------------------------------
-//* Find User (by Name)
-//----------------------------------
-//? Questions
-const menuFindUser = [
-  {
-    type: 'input',
-    name: 'username', 
-    message: 'Who are you looking for?',
-    default: 'specify a username',
-  },
-];
-
-//? Command
-program
-  .command('finduser')
-  .description('Find a user in the database')
-  .action(() => {
-    prompt(menuFindUser)
-      .then(() => console.log('Searching the database...'));
-    // prompt(menuFindUser).then(answers => findUser(answers)); // TODO <---
-  });
-
-//----------------------------------
-//* List All Pantry Items
-//----------------------------------
-//? Command
-program
-  .command('listpantry')
-  .description('List all pantry items by name and ID')
-  .action(() => console.log('Returning all records...'));
-//.action(() => listAllUsers()); // TODO <---
-
-//----------------------------------
-//* List All Users (by username and role)
-//----------------------------------
-//? Command
-program
-  .command('listusers')
-  .description('List all users by username, role and ID')
-  .action(() => console.log('Returning all user records...'));
-//.action(() => listAllUsers()); // TODO <---
-
-//----------------------------------
-//* Remove Pantry Item
-//----------------------------------
-//? Questions
-const menuRemovePantryItem = [
-  {
-    type: 'input',
-    name: 'pantryItemID', 
-    message: 'What item would you like to remove?',
-    default: 'ID',
-  },
-];
-
-//? Command
-program
-  .command('removeitem')
-  .description('Remove an item from the pantry')
-  .action(() => {
-    prompt(menuRemovePantryItem)
-      .then(() => console.log('Removing the item from the pantry...'));
-    // prompt(menuRemovePantryItem).then(answers => removePantryItem(answers)); // TODO <---
-  });
-
-//----------------------------------
-//* Remove User (by ID)
-//----------------------------------
-//? Questions
-const menuRemoveUserRecord = [
-  {
-    type: 'input',
-    name: 'userid', 
-    message: 'Enter a valid user ID to remove a record:',
-    default: 'mongo ID',
-  },
-];
-
-//? Command
-program
-  .command('removeuser')
-  .description('Remove a user record')
-  .action(() => {
-    prompt(menuRemoveUserRecord)
-      .then(() => console.log('Removing the user record...'));
-    // prompt(menuRemoveUserRecord).then(answers => removeUserRecord(answers)); // TODO <---
-  });
-
-//----------------------------------
-//* Update Pantry Item
-//----------------------------------
-//? Questions
-const menuUpdatePantryItem = [
-  {
-    type: 'input',
-    name: 'pantryItemID', 
-    message: 'What item are you looking for?',
-    default: 'ID',
-  },
-  {
-    type: 'input',
-    name: 'pantryItem', 
-    message: 'What would you like to rename this item as?',
-    default: 'singular nouns only',
-  },
-];
-
-//? Command
-program
-  .command('updateitem')
-  .description('Update an item in the pantry')
-  .action(() => {
-    prompt(menuUpdatePantryItem)
-      .then(() => console.log('Searching the pantry for your item...'));
-    // prompt(menuUpdatePantryItem).then(answers => updatePantryItem(answers)); // TODO <---
-  });
-
-//----------------------------------
-//* Update User (by ID)
-//----------------------------------
-//? Questions
-const menuUpdateUserRecord = [
-  {
-    type: 'input',
-    name: 'userid', 
-    message: 'Enter a valid user ID to update a record:',
-    default: 'mongo ID',
-  },
-  {
-    type: 'input',
-    name: 'username', 
-    message: 'Choose a username:',
-  },
-  {
-    type: 'list',
-    name: 'role', 
-    message: 'Choose the user role:',
-    choices: [
-      'user',
-      'donator',
-      'driver',
-      'admin',
-    ],
+    name: 'signinUsername',
+    message: 'Enter your admin username:'
   },
   {
     type: 'password',
-    name: 'password', 
-    message: 'Specify a password:',
-  },
+    name: 'signinPassword',
+    message: 'Enter your password:'
+  }
 ];
 
 //? Command
 program
-  .command('updateuser')
-  .description('Update a user record')
+  .command('get-food')
+  .description('Get your food to your pantry')
   .action(() => {
-    prompt(menuUpdateUserRecord)
-      .then(() => console.log('Performing the requested actions...'));
-    // prompt(menuUpdateUserRecord).then(answers => updateUserRecord(answers)); // TODO <---
+    prompt(menuGrab).then(answers => {
+      superagent
+        .get('http://localhost:3000/admin/food')
+        .auth(answers.signinUsername, answers.signinPassword)
+        .then(response => {
+          console.log(response.text);
+        });
+    });
   });
 
 //----------------------------------
