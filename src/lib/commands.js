@@ -79,7 +79,7 @@ program
   .action(() => {
     prompt(menuSignUp).then(answers => {
       superagent
-        .post('http://localhost:3000/signup/admin')
+        .post('https://foodriverdb.herokuapp.com/signup/admin')
         .send({
           username: answers.username,
           password: answers.password,
@@ -103,7 +103,7 @@ program
   .action(() => {
     prompt(authLogin).then(answers => {
       superagent
-        .get('http://localhost:3000/admin/driver-routes')
+        .get('https://foodriverdb.herokuapp.com/admin/driver-routes')
         .auth(answers.username, answers.password)
         .then(response => {
           console.log(response.text);
@@ -140,7 +140,7 @@ program
   .action(() => {
     prompt(menuPantry).then(answers => {
       superagent
-        .post('http://localhost:3000/admin/food')
+        .post('https://foodriverdb.herokuapp.com/admin/food')
         .send({
           food: answers.food
         })
@@ -175,7 +175,7 @@ program
   .action(() => {
     prompt(menuGrab).then(answers => {
       superagent
-        .get('http://localhost:3000/admin/food')
+        .get('https://foodriverdb.herokuapp.com/admin/food')
         .auth(answers.signinUsername, answers.signinPassword)
         .then(response => {
           console.log(response.text);
