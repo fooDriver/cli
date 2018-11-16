@@ -1,0 +1,30 @@
+{
+  "name": "foodriver-cli",
+  "version": "1.0.0",
+  "description": "This is the optional CLI for the fooDriver server",
+  "main": "index.js",
+  "preferGlobal": true,
+  "bin": "./src/bin/commands.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fooDriver/cli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fooDriver/cli/issues"
+  },
+  "homepage": "https://github.com/fooDriver/cli#readme",
+  "dependencies": {
+    "commander": "^2.19.0",
+    "figlet": "^1.2.1",
+    "inquirer": "^6.2.0",
+    "opn": "^5.4.0",
+    "shelljs": "^0.8.3",
+    "superagent": "^4.0.0-beta.5"
+  }
+}
