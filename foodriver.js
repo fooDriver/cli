@@ -1,16 +1,31 @@
-#!/usr/bin/env node
 //----------------------------------
 //* Setup
 //----------------------------------
 // Safety Goggles ON
 'use strict';
+console.clear();
 
 // Dependencies
+const figlet = require('figlet');
 const program = require('commander');
 const { prompt } = require('inquirer'); // inquirer.prompt
 const superagent = require('superagent');
 const sh = require('shelljs');
 const opn = require('opn');
+
+//----------------------------------
+//* Welcome Menu
+//----------------------------------
+// figlet('fooDriver CLI', function(err, banner) {
+//   if (err) {
+//     console.log('Something went wrong...');
+//     console.dir(err);
+//     return;
+//   }
+//   console.log(banner);
+//   console.log('\nType \'fooDriver --help\' for a full list of commands.\n');
+//   process.exit();
+// });
 
 //----------------------------------
 //* Basic Commands
@@ -21,7 +36,6 @@ program.version('1.0.0').description('fooDriver CLI');
 //----------------------------------
 //* Global Auth Signup
 //----------------------------------
-
 const authLogin = [
   {
     type: 'input',
