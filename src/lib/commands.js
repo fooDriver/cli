@@ -10,6 +10,7 @@ const program = require('commander');
 const { prompt } = require('inquirer'); // inquirer.prompt
 const superagent = require('superagent');
 const sh = require('shelljs');
+const opn = require('opn');
 
 //----------------------------------
 //* Basic Commands
@@ -179,6 +180,32 @@ program
         .then(response => {
           console.log(response.text);
         });
+    });
+  });
+
+//----------------------------------
+//* Spinning Cube
+//----------------------------------
+//? Questions
+const easterEgg = [
+  {
+    type: 'password',
+    name: 'password',
+    message: `Who is Jen's spirit animal?`
+  }
+];
+
+//? Command
+program
+  .command('cube')
+  .description('Very useful')
+  .action(() => {
+    prompt(easterEgg).then(answers => {
+      if (answers.password === 'Snarf') {
+        opn(`https://timinis.github.io/three-js-crash-course/`);
+      } else {
+        console.log(`THANDER CATS!`);
+      }
     });
   });
 
